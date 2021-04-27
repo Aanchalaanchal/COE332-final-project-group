@@ -7,21 +7,27 @@ from collections import Counter
 app = Flask(__name__)
 rd = redis.StrictRedis(host='localhost', port=6379, db=0)
 
+@app.route('/', methods=['GET'])
+def reset():
+   reset_data()
+   return "reset"
+
 @app.route('/name/<name>', methods=['GET'])
 def get_name(name):   
    return json.dumps([launch for launch in get_data() if name == launch['A']])
 
 @app.route('/operator/<operator>', methods=['GET'])
 def get_operator(operator):   
-   return json.dumps([launch for launch in get_data() if operator == launch['E']])
+   return json.dumps([launch for launch in get_data() if operator in launch['E']])
 
 @app.route('/contractor/<contractor>', methods=['GET'])
 def get_contractor(contractor):   
-   return json.dumps([launch for launch in get_data() if contractor == launch['V']])
+   return json.dumps([launch for launch in get_data() if contractor in launch['V']])
 
 @app.route('/lifetime/<lifetime>', methods=['GET'])
 def get_lifetime(lifetime):   
-   return json.dumps([launch for launch in get_data() if lifetime <= launch['U']])
+   valid = [launch for launch in get_data() if launch['U'] != '']
+   return json.dumps([launch for launch in valid if float(lifetime) <= float(launch['U'])])
 
 @app.route('/country/<country>', methods=['GET'])
 def get_country(country):   
