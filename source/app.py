@@ -69,7 +69,7 @@ def get_vehicle(vehicle):
 
 @app.route('/launch/recent', methods=['GET'])
 def get_recent():
-   return sorted(get_data(), key = lambda i: i['T'])[0:4]
+   return json.dumps(sorted(get_data(), key = lambda i: i['T'])[0:4])
 
 @app.route('/satellite/<key>', methods=['GET', 'DELETE', 'POST'])
 def get_launch_by_id(key):
@@ -88,7 +88,7 @@ def add_launch():
    rd.hmset(request.form)
    return f"Successfully added"
 
-@app.route('/total/<country>', methods=['POST'])
+@app.route('/total/<country>', methods=['GET'])
 def get_total_by_country(country):
    sats = [launch for launch in get_data() if country == launch['D']]
    res = Counter(sats['I'])
