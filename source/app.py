@@ -57,7 +57,7 @@ def get_orbit(orbit):
 def get_launches_by_date(date1, date2):
    a = datetime.strptime(date1, "%d-%m-%Y")
    b = datetime.strptime(date2, "%d-%m-%Y")
-   return json.dumps([launch for launch in get_data() if a <= datetime.strptime(launch['T'], "%d/%m/%Y") <= b])
+   return json.dumps([launch for launch in get_data() if a <= datetime.strptime(launch['T'], "%d-%m-%Y") <= b])
 
 @app.route('/launch/site/<site>', methods=['GET'])
 def get_site(site):   
