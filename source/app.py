@@ -90,8 +90,8 @@ def add_launch():
 
 @app.route('/total/<country>', methods=['GET'])
 def get_total_by_country(country):
-   sats = [launch for launch in get_data() if country == launch['D']]
-   res = Counter(sats['I'])
+   sats = [launch['I'] for launch in get_data() if country == launch['D']]
+   res = Counter(sats)
    return json.dumps(res)
 
 def get_data():
