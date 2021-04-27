@@ -101,6 +101,7 @@ def get_data():
    return sats
 
 def reset_data():
+   rd.flushdb()
    with open("./data/sat-data.json", "r", encoding="utf8") as json_file:
       satdata = json.load(json_file)
       for sat in satdata[1:]:
