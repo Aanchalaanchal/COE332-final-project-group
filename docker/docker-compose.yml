@@ -1,0 +1,20 @@
+version: '3'
+services:
+    api:
+        build: .
+        container_name: api
+        ports: 5022:5000
+        volumes:
+            - ./data/data_file.json:/datafile.json
+
+    redis:
+        image: redis:latest
+        ports:
+            - 6402:6379
+        volumes:
+            - ./config/redis.conf:/redis.conf
+        command: [ "redis-server", "/redis.conf" ]
+
+    worker:
+        build: .
+        container_name: worker.py

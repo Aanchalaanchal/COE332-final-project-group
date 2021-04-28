@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api-test
+    env: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-test
+  template:
+    metadata:
+      labels:
+        app: api-test
+        env: test
+    spec:
+      containers:
+        - name: app
+          imagePullPolicy: Always
+          image: kdnguyen205/hw3
+          env:
+          - name: FLASK_APP
+            value: "app.py"
+          ports:
+            - name: http
+              containerPort: 5000
+
