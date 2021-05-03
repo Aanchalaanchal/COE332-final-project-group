@@ -3,9 +3,24 @@ import json
 import redis
 from datetime import datetime
 from collections import Counter
+import jobs
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 app = Flask(__name__)
-rd = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+redis_ip = os.environ.get('REDIS_IP')
+if not redis_ip:
+   raise Exception()
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
+
+@app.route('/jobs', methods=['POST'])
+def jobs_api():
+   try:
+      job = request.get_json(force=True)
+   except Exception as e:
+      return True, json.dumps({'status': "Error", 'message': 'Invalid JSON: {}.'.format(e)})
+   return json.dumps(jobs.add_job(job['start'], job['end']))
 
 @app.route('/', methods=['GET'])
 def reset():
@@ -93,6 +108,11 @@ def get_total_by_country(country):
    sats = [launch['I'] for launch in get_data() if country == launch['D']]
    res = Counter(sats)
    return json.dumps(res)
+
+@app.route('/plot.png')
+def plot_png():
+   job.add_job()
+   return "Job submitted to the queue"
 
 def get_data():
    keys = [key.decode("utf-8") for key in rd.keys()]
