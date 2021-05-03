@@ -1,6 +1,7 @@
 import uuid
 from hotqueue import HotQueue
 from redis import StrictRedis
+import os
 
 redis_ip = os.environ.get('REDIS_IP')
 if not redis_ip:
