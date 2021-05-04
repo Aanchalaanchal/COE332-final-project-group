@@ -1,4 +1,4 @@
-from jobs import q, update_job_status
+from jobs import q, update_job_status, get_country
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from api import get_data
@@ -23,6 +23,7 @@ def execute_job(jid):
     # return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure(jid):
+    country = get_country(jid)
     sats = [launch['I'] for launch in get_data() if country == launch['D']]
     res = Counter(sats)
     labels = res.keys()
