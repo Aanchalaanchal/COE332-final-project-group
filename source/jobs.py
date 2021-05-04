@@ -20,7 +20,7 @@ def _generate_job_key(jid):
 def _instantiate_job(jid, status, country):
     if type(jid) == str:
         return {'id': jid,
-                'status': status
+                'status': status,
                 'country': country
         }
     return {'id': jid.decode('utf-8'),
