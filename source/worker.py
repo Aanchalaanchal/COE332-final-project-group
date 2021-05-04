@@ -1,7 +1,7 @@
 from jobs import q, update_job_status
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
-from api import get_total_by_country
+from api import get_data
 import json
 import redis
 
@@ -23,7 +23,8 @@ def execute_job(jid):
     # return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure(jid):
-    res = get_total_by_country('USA')
+    sats = [launch['I'] for launch in get_data() if country == launch['D']]
+    res = Counter(sats)
     labels = res.keys()
     sizes = res.values()
     explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice
