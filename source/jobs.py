@@ -3,9 +3,10 @@ from hotqueue import HotQueue
 from redis import StrictRedis
 import os
 
-redis_ip = os.environ.get('REDIS_IP')
-if not redis_ip:
-   raise Exception()
+# redis_ip = os.environ.get('REDIS_IP')
+# if not redis_ip:
+#    raise Exception()
+redis_ip = "localhost"
 
 q = HotQueue("queue", host=redis_ip, port=6379, db=1)
 rd-jobs = redis.StrictRedis(host=redis_ip, port=6379, db=2)
@@ -56,3 +57,9 @@ def update_job_status(jid, status):
         _save_job(_generate_job_key(jid), job)
     else:
         raise Exception()
+
+def get_jobs():
+   keys = [key.decode("utf-8") for key in rd.keys()]
+   bjobs = [rd.hgetall(key) for key in keys]
+   jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
+   return jobs

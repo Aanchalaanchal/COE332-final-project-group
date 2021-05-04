@@ -1,15 +1,26 @@
 from jobs import q, update_job_status
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from api import get_total_by_country
+import json
+import redis
+
+# redis_ip = os.environ.get('REDIS_IP')
+# if not redis_ip:
+#    raise Exception()
+redis_ip = "localhost"
+
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
 
 @q.worker
 def execute_job(jid):
     jobs.update_job_status(jid, 'in progress')
-    fig = create_figure()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
+    create_figure()
+    # fig = create_figure()
+    # output = io.BytesIO()
+    # FigureCanvas(fig).print_png(output)
     jobs.update_job_status(jid, 'complete')
-    return Response(output.getvalue(), mimetype='image/png')
+    # return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure():
     res = get_total_by_country('USA')
@@ -20,9 +31,16 @@ def create_figure():
     fig = plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
             shadow=True, startangle=90)
     fig.axis('equal')
+    plt.savefig('/output.png')
+    with open('/output_image.png', 'rb') as f:
+        img = f.read()
+
+    rd.hset(jobid, 'image', img)
+    rd.hset(jobid, 'status', 'finished')
+
 #    fig = Figure()
 #    axis = fig.add_subplot(1, 1, 1)
 #    xs = range(100)
 #    ys = [random.randint(1, 50) for x in xs]
 #    axis.plot(xs, ys)
-   return fig
+#    return fig

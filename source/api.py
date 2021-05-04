@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 import json
 import redis
 from datetime import datetime
@@ -6,12 +6,15 @@ from collections import Counter
 import jobs
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+import uuid
 
 app = Flask(__name__)
 
-redis_ip = os.environ.get('REDIS_IP')
-if not redis_ip:
-   raise Exception()
+# redis_ip = os.environ.get('REDIS_IP')
+# if not redis_ip:
+#    raise Exception()
+redis_ip = "localhost"
+
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
 
 @app.route('/jobs', methods=['POST'])
@@ -82,9 +85,9 @@ def get_site(site):
 def get_vehicle(vehicle):   
    return json.dumps([launch for launch in get_data() if vehicle == launch['Y']])
 
-@app.route('/launch/recent', methods=['GET'])
-def get_recent():
-   return json.dumps(sorted(get_data(), key = lambda i: i['T'])[0:4])
+# @app.route('/launch/recent', methods=['GET'])
+# def get_recent():
+#    return json.dumps(sorted(get_data(), key = lambda i: i['T'])[0:4])
 
 @app.route('/satellite/<key>', methods=['GET', 'DELETE', 'POST'])
 def get_launch_by_id(key):
@@ -96,12 +99,16 @@ def get_launch_by_id(key):
       rd.hmset(key, request.form)
       return f"Successfully updated {key}"
    else:
-      return 0
+      rd.delete(key)
+      return f"Successfully deleted {key}"
 
 @app.route('/satellite', methods=['POST'])
 def add_launch():
+   data = request.form
+   uid = str(uuid.uuid4())
+   data['uid'] = uid
    rd.hmset(request.form)
-   return f"Successfully added"
+   return f"Successfully added with id {uid}"
 
 @app.route('/total/<country>', methods=['GET'])
 def get_total_by_country(country):
@@ -109,10 +116,21 @@ def get_total_by_country(country):
    res = Counter(sats)
    return json.dumps(res)
 
-@app.route('/plot.png')
-def plot_png():
+@app.route('/submit', methods=['POST'])
+def submit():
    job.add_job()
    return "Job submitted to the queue"
+
+@app.route('/jobs', methods=['GET'])
+def jobs():
+   return json.dumps(job.get_jobs())
+
+@app.route('/download/<jobid>', methods=['GET'])
+def download(jobid):
+   path = f'/app/{jobid}.png'
+   with open(path, 'wb') as f:
+      f.write(rd.hget(jobid, 'image'))
+   return send_file(path, mimetype='image/png', as_attachment=True)
 
 def get_data():
    keys = [key.decode("utf-8") for key in rd.keys()]
