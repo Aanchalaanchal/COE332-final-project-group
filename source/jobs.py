@@ -48,7 +48,7 @@ def add_job(country, status="submitted"):
 
 def update_job_status(jid, status):
     """Update the status of job with job id `jid` to status `status`."""
-    jid, status, country = rd.hmget(generate_job_key(jid), 'id', 'status', 'country')
+    jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
     job = _instantiate_job(jid, status, country)
     if job:
         job['status'] = status

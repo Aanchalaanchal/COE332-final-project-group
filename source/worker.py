@@ -14,12 +14,12 @@ rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
 
 @q.worker
 def execute_job(jid):
-    jobs.update_job_status(jid, 'in progress')
+    update_job_status(jid, 'in progress')
     create_figure(jid)
     # fig = create_figure()
     # output = io.BytesIO()
     # FigureCanvas(fig).print_png(output)
-    jobs.update_job_status(jid, 'complete')
+    update_job_status(jid, 'complete')
     # return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure(jid):
@@ -44,3 +44,5 @@ def create_figure(jid):
 #    ys = [random.randint(1, 50) for x in xs]
 #    axis.plot(xs, ys)
 #    return fig
+
+execute_job()
