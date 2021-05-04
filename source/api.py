@@ -121,7 +121,11 @@ def get_total_by_country(country):
 
 @app.route('/submit', methods=['POST'])
 def submit():
-   jobs.add_job()
+   data = request.form.to_dict()
+   if 'country' not in data.keys():
+      jobs.add_job('USA')
+   else:
+      jobs.add_job(data['country'])
    return "Job submitted to the queue"
 
 @app.route('/jobs', methods=['GET'])
