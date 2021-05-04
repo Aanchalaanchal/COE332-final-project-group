@@ -96,7 +96,10 @@ def get_launch_by_id(key):
       sat = { y.decode('utf-8'): bsat.get(y).decode('utf-8') for y in bsat.keys() }
       return json.dumps(sat)
    elif request.method == 'POST':
-      rd.hmset(key, request.form)
+      rd.delete(key)
+      data = request.form.to_dict()
+      data['uid'] = key
+      rd.hmset(key,data)
       return f"Successfully updated {key}"
    else:
       rd.delete(key)
@@ -104,10 +107,10 @@ def get_launch_by_id(key):
 
 @app.route('/satellite', methods=['POST'])
 def add_launch():
-   data = request.form
+   data = request.form.to_dict()
    uid = str(uuid.uuid4())
    data['uid'] = uid
-   rd.hmset(request.form)
+   rd.hmset(uid, data)
    return f"Successfully added with id {uid}"
 
 @app.route('/total/<country>', methods=['GET'])

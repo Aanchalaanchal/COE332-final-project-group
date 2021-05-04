@@ -9,7 +9,7 @@ import os
 redis_ip = "localhost"
 
 q = HotQueue("queue", host=redis_ip, port=6379, db=1)
-rd-jobs = redis.StrictRedis(host=redis_ip, port=6379, db=2)
+rdjobs = StrictRedis(host=redis_ip, port=6379, db=2)
 
 def _generate_jid():
     return str(uuid.uuid4())
@@ -32,7 +32,7 @@ def _instantiate_job(jid, status, start, end):
 
 def _save_job(job_key, job_dict):
     """Save a job object in the Redis database."""
-    rd-jobs.hmset(job_key, job_dict)
+    rdjobs.hmset(job_key, job_dict)
 
 def _queue_job(jid):
     """Add a job to the redis queue."""
@@ -59,7 +59,7 @@ def update_job_status(jid, status):
         raise Exception()
 
 def get_jobs():
-   keys = [key.decode("utf-8") for key in rd.keys()]
+   keys = [key.decode("utf-8") for key in rdjobs.keys()]
    bjobs = [rd.hgetall(key) for key in keys]
    jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
    return jobs
