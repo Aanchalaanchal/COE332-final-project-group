@@ -121,12 +121,12 @@ def get_total_by_country(country):
 
 @app.route('/submit', methods=['POST'])
 def submit():
-   job.add_job()
+   jobs.add_job()
    return "Job submitted to the queue"
 
 @app.route('/jobs', methods=['GET'])
 def jobs():
-   return json.dumps(job.get_jobs())
+   return json.dumps(jobs.get_jobs())
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):
