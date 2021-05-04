@@ -3,7 +3,7 @@ import json
 import redis
 from datetime import datetime
 from collections import Counter
-import jobs
+from jobs import add_job, get_jobs
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import uuid
@@ -122,15 +122,15 @@ def get_total_by_country(country):
 @app.route('/submit', methods=['POST'])
 def submit():
    data = request.form.to_dict()
-   if 'country' not in data.keys():
-      jobs.add_job('USA')
+   if 'country' in data:
+      add_job(data['country'])
    else:
-      jobs.add_job(data['country'])
+      add_job('USA')
    return "Job submitted to the queue"
 
 @app.route('/jobs', methods=['GET'])
 def jobs():
-   return json.dumps(jobs.get_jobs())
+   return json.dumps(get_jobs())
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):

@@ -15,14 +15,14 @@ rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
 @q.worker
 def execute_job(jid):
     jobs.update_job_status(jid, 'in progress')
-    create_figure()
+    create_figure(jid)
     # fig = create_figure()
     # output = io.BytesIO()
     # FigureCanvas(fig).print_png(output)
     jobs.update_job_status(jid, 'complete')
     # return Response(output.getvalue(), mimetype='image/png')
 
-def create_figure():
+def create_figure(jid):
     res = get_total_by_country('USA')
     labels = res.keys()
     sizes = res.values()
@@ -31,8 +31,8 @@ def create_figure():
     fig = plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
             shadow=True, startangle=90)
     fig.axis('equal')
-    plt.savefig('/output.png')
-    with open('/output_image.png', 'rb') as f:
+    plt.savefig(f'/app/{jobid}.png')
+    with open(f'/app/{jobid}.png', 'rb') as f:
         img = f.read()
 
     rd.hset(jobid, 'image', img)

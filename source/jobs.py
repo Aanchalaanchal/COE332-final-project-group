@@ -41,15 +41,15 @@ def add_job(country, status="submitted"):
     jid = _generate_jid()
     job_dict = _instantiate_job(jid, status, country)
     # update call to save_job:
-    save_job(_generate_job_key(jid), job_dict)
+    _save_job(_generate_job_key(jid), job_dict)
     # update call to queue_job:
-    queue_job(jid)
+    _queue_job(jid)
     return job_dict
 
 def update_job_status(jid, status):
     """Update the status of job with job id `jid` to status `status`."""
-    jid, status, start, end = rd.hmget(generate_job_key(jid), 'id', 'status', 'start', 'end')
-    job = _instantiate_job(jid, status, start, end)
+    jid, status, country = rd.hmget(generate_job_key(jid), 'id', 'status', 'country')
+    job = _instantiate_job(jid, status, country)
     if job:
         job['status'] = status
         _save_job(_generate_job_key(jid), job)
@@ -58,6 +58,6 @@ def update_job_status(jid, status):
 
 def get_jobs():
    keys = [key.decode("utf-8") for key in rdjobs.keys()]
-   bjobs = [rd.hgetall(key) for key in keys]
+   bjobs = [rdjobs.hgetall(key) for key in keys]
    jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
    return jobs
