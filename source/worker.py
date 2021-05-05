@@ -34,7 +34,7 @@ def create_figure(jid):
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
         img = f.read()
-    # add_image_to_job(jid, img)
+    add_image_to_job(jid, img)
     # rd.hset(jid, 'image', img)
     # rd.hset(jid, 'status', 'finished')
 

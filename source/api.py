@@ -15,8 +15,8 @@ app = Flask(__name__)
 #    raise Exception()
 redis_ip = "localhost"
 
-rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
-rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2)
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=0, charset="utf-8", decode_responses=True)
+rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2, charset="utf-8", decode_responses=True)
 
 @app.route('/jobs', methods=['POST'])
 def jobs_api():
@@ -141,9 +141,9 @@ def download(jobid):
    return send_file(path, mimetype='image/png', as_attachment=True)
 
 def get_data():
-   keys = [key.decode("utf-8") for key in rd.keys()]
-   bsats = [rd.hgetall(key) for key in keys]
-   sats = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bsats[1:]] 
+   keys = [key for key in rd.keys()]
+   sats = [rd.hgetall(key) for key in keys]
+   # sats = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bsats[1:]] 
    return sats
 
 def reset_data():
