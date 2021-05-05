@@ -4,13 +4,15 @@ from matplotlib.figure import Figure
 from api import get_data
 import json
 import redis
+from collections import Counter
+import matplotlib.pyplot as plt
 
 # redis_ip = os.environ.get('REDIS_IP')
 # if not redis_ip:
 #    raise Exception()
 redis_ip = "localhost"
 
-rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=1)
 
 @q.worker
 def execute_job(jid):
@@ -30,15 +32,15 @@ def create_figure(jid):
     sizes = res.values()
     explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice
 
-    fig = plt.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
-            shadow=True, startangle=90)
-    fig.axis('equal')
-    plt.savefig(f'/app/{jobid}.png')
-    with open(f'/app/{jobid}.png', 'rb') as f:
+    fig, axs = plt.subplots()
+    axs.pie(sizes, labels=labels, autopct='%1.1f%%')
+    axs.axis('equal')
+    plt.savefig(f'{jid}.png')
+    with open(f'{jid}.png', 'rb') as f:
         img = f.read()
 
-    rd.hset(jobid, 'image', img)
-    rd.hset(jobid, 'status', 'finished')
+    rd.hset(jid, 'image', img)
+    rd.hset(jid, 'status', 'finished')
 
 #    fig = Figure()
 #    axis = fig.add_subplot(1, 1, 1)
