@@ -1,4 +1,4 @@
-from jobs import q, update_job_status, get_country, add_image_to_job
+from jobs import q, update_job_status, get_country
 from api import get_data
 import redis
 from collections import Counter
@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #    raise Exception()
 redis_ip = "localhost"
 
-rd=redis.StrictRedis(host=redis_ip, port=6379, db=2)
+rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
 
 @q.worker
 def execute_job(jid):
@@ -34,9 +34,6 @@ def create_figure(jid):
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
         img = f.read()
-    #add_image_to_job(jid, img)
-    rd.hset(jid, 'image', img)
-    print([key for key in rd.keys()])
-    # rd.hset(jid, 'status', 'finished')
+    rdimg.hset(jid, 'image', img)
 
 execute_job()
