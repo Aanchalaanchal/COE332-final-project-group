@@ -56,6 +56,16 @@ def update_job_status(jid, nstatus):
     else:
         raise Exception()
 
+def add_image_to_job(jid, img):
+    """Add image to job"""
+    jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
+    job = _instantiate_job(jid, status, country)
+    if job:
+        job['image'] = img
+        _save_job(_generate_job_key(jid), job)
+    else:
+        raise Exception()
+
 def get_country(jid):
     jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
     return country.decode('utf-8')
