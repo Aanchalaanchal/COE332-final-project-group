@@ -1,8 +1,5 @@
 from jobs import q, update_job_status, get_country
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
 from api import get_data
-import json
 import redis
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -18,11 +15,7 @@ rd=redis.StrictRedis(host=redis_ip, port=6379, db=1)
 def execute_job(jid):
     update_job_status(jid, 'in progress')
     create_figure(jid)
-    # fig = create_figure()
-    # output = io.BytesIO()
-    # FigureCanvas(fig).print_png(output)
     update_job_status(jid, 'complete')
-    # return Response(output.getvalue(), mimetype='image/png')
 
 def create_figure(jid):
     country = get_country(jid)
@@ -30,7 +23,8 @@ def create_figure(jid):
     res = Counter(sats)
     labels = res.keys()
     sizes = res.values()
-    explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice
+    print("labels ", labels)
+    print("sizes ", sizes)
 
     fig, axs = plt.subplots()
     axs.pie(sizes, labels=labels, autopct='%1.1f%%')
@@ -41,12 +35,5 @@ def create_figure(jid):
 
     rd.hset(jid, 'image', img)
     rd.hset(jid, 'status', 'finished')
-
-#    fig = Figure()
-#    axis = fig.add_subplot(1, 1, 1)
-#    xs = range(100)
-#    ys = [random.randint(1, 50) for x in xs]
-#    axis.plot(xs, ys)
-#    return fig
 
 execute_job()
