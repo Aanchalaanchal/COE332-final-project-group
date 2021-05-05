@@ -137,7 +137,7 @@ def jobs():
 def download(jobid):
    path = f'{jobid}.png'
    with open(path, 'wb') as f:
-      f.write(rd.hget(jobid, 'image'))
+      f.write(rdjobs.hget(jobid, 'image'))
    return send_file(path, mimetype='image/png', as_attachment=True)
 
 def get_data():
