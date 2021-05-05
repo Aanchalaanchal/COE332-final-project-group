@@ -37,6 +37,10 @@ def resetjobs():
    reset_jobs()
    return "reset jobs"
 
+@app.route('/all', methods=['GET'])
+def get_all():   
+   return json.dumps(get_data())
+
 @app.route('/name/<name>', methods=['GET'])
 def get_name(name):   
    return json.dumps([launch for launch in get_data() if name == launch['A']])
