@@ -17,6 +17,7 @@ redis_ip = "localhost"
 
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0, charset="utf-8", decode_responses=True)
 rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
+rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2, charset="utf-8", decode_responses=True)
 
 @app.route('/jobs', methods=['POST'])
 def jobs_api():
@@ -30,6 +31,11 @@ def jobs_api():
 def reset():
    reset_data()
    return "reset"
+
+@app.route('/resetjobs', methods=['GET'])
+def resetjobs():
+   reset_jobs()
+   return "reset jobs"
 
 @app.route('/name/<name>', methods=['GET'])
 def get_name(name):   
@@ -147,11 +153,14 @@ def get_data():
 
 def reset_data():
    rd.flushdb()
-   rdjobs.flushdb()
    with open("./data/sat-data.json", "r", encoding="utf8") as json_file:
       satdata = json.load(json_file)
       for sat in satdata[1:]:
          rd.hmset(sat['uid'], sat)
+
+def reset_jobs():
+   rdjobs.flushdb()
+   rdimg.flushdb()
 
 if __name__ == '__main__':
    reset_data()
