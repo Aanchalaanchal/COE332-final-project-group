@@ -46,12 +46,12 @@ def add_job(country, status="submitted"):
     _queue_job(jid)
     return job_dict
 
-def update_job_status(jid, status):
+def update_job_status(jid, nstatus):
     """Update the status of job with job id `jid` to status `status`."""
     jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
     job = _instantiate_job(jid, status, country)
     if job:
-        job['status'] = status
+        job['status'] = nstatus
         _save_job(_generate_job_key(jid), job)
     else:
         raise Exception()
@@ -61,7 +61,7 @@ def get_country(jid):
     return country.decode('utf-8')
 
 def get_jobs():
-   keys = [key.decode("utf-8") for key in rdjobs.keys()]
-   bjobs = [rdjobs.hgetall(key) for key in keys]
-   jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
-   return jobs
+    keys = [key.decode("utf-8") for key in rdjobs.keys() if key != 'image']
+    bjobs = [rdjobs.hgetall(key) for key in keys]
+    jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
+    return jobs

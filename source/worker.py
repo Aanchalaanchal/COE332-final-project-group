@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #    raise Exception()
 redis_ip = "localhost"
 
-rd=redis.StrictRedis(host=redis_ip, port=6379, db=1)
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=2)
 
 @q.worker
 def execute_job(jid):
@@ -36,6 +36,6 @@ def create_figure(jid):
         img = f.read()
 
     rd.hset(jid, 'image', img)
-    rd.hset(jid, 'status', 'finished')
+    # rd.hset(jid, 'status', 'finished')
 
 execute_job()

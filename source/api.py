@@ -16,6 +16,7 @@ app = Flask(__name__)
 redis_ip = "localhost"
 
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0)
+rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2)
 
 @app.route('/jobs', methods=['POST'])
 def jobs_api():
@@ -134,7 +135,7 @@ def jobs():
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):
-   path = f'/app/{jobid}.png'
+   path = f'{jobid}.png'
    with open(path, 'wb') as f:
       f.write(rd.hget(jobid, 'image'))
    return send_file(path, mimetype='image/png', as_attachment=True)
@@ -147,6 +148,7 @@ def get_data():
 
 def reset_data():
    rd.flushdb()
+   rdjobs.flushdb()
    with open("./data/sat-data.json", "r", encoding="utf8") as json_file:
       satdata = json.load(json_file)
       for sat in satdata[1:]:
