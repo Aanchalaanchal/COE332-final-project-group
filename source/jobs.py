@@ -9,7 +9,7 @@ import os
 redis_ip = "localhost"
 
 q = HotQueue("queue", host=redis_ip, port=6379, db=1)
-rdjobs = StrictRedis(host=redis_ip, port=6379, db=2)
+rdjobs = StrictRedis(host=redis_ip, port=6379, db=2, charset="utf-8", decode_responses=True)
 
 def _generate_jid():
     return str(uuid.uuid4())
@@ -68,10 +68,10 @@ def add_image_to_job(jid, img):
 
 def get_country(jid):
     jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
-    return country.decode('utf-8')
+    return country
 
 def get_jobs():
-    keys = [key.decode("utf-8") for key in rdjobs.keys() if key != 'image']
-    bjobs = [rdjobs.hgetall(key) for key in keys]
-    jobs = [{ y.decode('utf-8'): banimal.get(y).decode('utf-8') for y in banimal.keys() } for banimal in bjobs[1:]] 
+    keys = [key for key in rdjobs.keys()]
+    binjobs = [rdjobs.hgetall(key) for key in keys]
+    jobs = [{ y: binjob.get(y) for y in ['id', 'status', 'country']} for binjob in binjobs] 
     return jobs
