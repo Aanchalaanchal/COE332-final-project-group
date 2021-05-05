@@ -21,11 +21,13 @@ def create_figure(jid):
     country = get_country(jid)
     sats = [launch['I'] for launch in get_data() if country == launch['D']]
     res = Counter(sats)
-    labels = res.keys()
-    sizes = res.values()
+    labels = list(res.keys())
+    sizes = list(res.values())
     print("labels ", labels)
     print("sizes ", sizes)
-
+    print(res)
+    print(sats)
+    print(country)
     fig, axs = plt.subplots()
     axs.pie(sizes, labels=labels, autopct='%1.1f%%')
     axs.axis('equal')

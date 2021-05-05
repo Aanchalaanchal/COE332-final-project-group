@@ -58,7 +58,7 @@ def update_job_status(jid, status):
 
 def get_country(jid):
     jid, status, country = rdjobs.hmget(_generate_job_key(jid), 'id', 'status', 'country')
-    return country
+    return country.decode('utf-8')
 
 def get_jobs():
    keys = [key.decode("utf-8") for key in rdjobs.keys()]
