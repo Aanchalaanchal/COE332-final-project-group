@@ -16,7 +16,7 @@ app = Flask(__name__)
 redis_ip = "localhost"
 
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0, charset="utf-8", decode_responses=True)
-rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2, charset="utf-8", decode_responses=True)
+rdjobs=redis.StrictRedis(host=redis_ip, port=6379, db=2)
 
 @app.route('/jobs', methods=['POST'])
 def jobs_api():

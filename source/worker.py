@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 # redis_ip = os.environ.get('REDIS_IP')
 # if not redis_ip:
 #    raise Exception()
-# redis_ip = "localhost"
+redis_ip = "localhost"
 
-# rd=redis.StrictRedis(host=redis_ip, port=6379, db=2)
+rd=redis.StrictRedis(host=redis_ip, port=6379, db=2)
 
 @q.worker
 def execute_job(jid):
@@ -34,8 +34,9 @@ def create_figure(jid):
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
         img = f.read()
-    add_image_to_job(jid, img)
-    # rd.hset(jid, 'image', img)
+    #add_image_to_job(jid, img)
+    rd.hset(jid, 'image', img)
+    print([key for key in rd.keys()])
     # rd.hset(jid, 'status', 'finished')
 
 execute_job()
