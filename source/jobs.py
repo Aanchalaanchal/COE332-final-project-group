@@ -36,7 +36,7 @@ def _queue_job(jid):
     """Add a job to the redis queue."""
     q.put(jid)
 
-def add_job(country, status="submitted"):
+def add_job1(country, status="submitted"):
     """Add a job to the redis queue."""
     jid = _generate_jid()
     job_dict = _instantiate_job(jid, status, country)
@@ -73,5 +73,5 @@ def get_country(jid):
 def get_jobs():
     keys = [key for key in rdjobs.keys()]
     binjobs = [rdjobs.hgetall(key) for key in keys]
-    jobs = [{ y: binjob.get(y) for y in ['id', 'status', 'country']} for binjob in binjobs] 
+    jobs = [{ y: binjob.get(y) for y in ['id', 'status', 'country', 'orbit']} for binjob in binjobs] 
     return jobs

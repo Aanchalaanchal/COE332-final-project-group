@@ -11,7 +11,7 @@ redis_ip = "localhost"
 
 rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
 
-@q.worker
+@q2.worker
 def execute_job(jid):
     update_job_status(jid, 'in progress')
     create_figure(jid)

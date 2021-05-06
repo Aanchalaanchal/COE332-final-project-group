@@ -4,8 +4,8 @@ import redis
 from datetime import datetime
 from collections import Counter
 # from jobs import add_job, get_jobs
-import jobs
-import jobs2
+from jobs import add_job1, get_jobs
+from jobs2 import add_job2
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import uuid
@@ -136,23 +136,23 @@ def get_total_by_country(country):
 def submit():
    data = request.form.to_dict()
    if 'country' in data:
-      jobs.add_job(data['country'])
+      add_job1(data['country'])
    else:
-      jobs.add_job('USA')
+      add_job1('USA')
    return "Job submitted to the queue"
 
 @app.route('/submit2', methods=['POST'])
 def submit2():
    data = request.form.to_dict()
    if 'orbit' in data:
-      jobs2.add_job(data['orbit'])
+      add_job2(data['orbit'])
    else:
-      jobs2.add_job('LEO')
+      add_job2('LEO')
    return "Job submitted to the queue"
 
 @app.route('/jobs', methods=['GET'])
 def jobs():
-   return json.dumps(jobs.get_jobs())
+   return json.dumps(get_jobs())
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):

@@ -34,9 +34,9 @@ def _save_job(job_key, job_dict):
 
 def _queue_job(jid):
     """Add a job to the redis queue."""
-    q.put(jid)
+    q2.put(jid)
 
-def add_job(orbit, status="submitted"):
+def add_job2(orbit, status="submitted"):
     """Add a job to the redis queue."""
     jid = _generate_jid()
     job_dict = _instantiate_job(jid, status, orbit)
