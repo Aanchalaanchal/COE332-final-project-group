@@ -8,7 +8,7 @@ The analysis job will generate a pie graph of all of the different types of sate
 
 ```` curl --data "country=USA" <redis-ip>:5000/submit ````
 
-This requires finding the redis service IP address. The country listed within the data of the post request will be what country is used for the analysis job and will be graphed. Some example for different countries present in the dataset and available for use in the analysis job are Canada, Thailand, and Russia. 
+This requires finding the redis service IP address. The country listed within the data of the post request will be what country is used for the analysis job and will be graphed.
 
 We can now check on our analysis job by running:
 
@@ -23,6 +23,24 @@ Once we can see that our job has a status of completed, we can download the png 
 ````curl localhost:5000/download/<job-id> > output.png ````
 
 where job-id was displayed in the list of jobs when we queried the /jobs endpoint. There is an output.png file within this directory that was generated in this way and shows an example pie graph generated using USA as the country. 
+
+A second analysis job worker is provided to plot another graph that this time takes the orbit type and plots the corresponding countries present in what percentages in this orbit type. This works very similarly to the previous analysis job with the only thing changing is the submittion endpoint. This analysis job is submitted using:
+
+```` curl --data "orbit=LEO" <redis-ip>:5000/submit2 ````
+
+The status of the job can be viewed using the exact same endpoint and reseting the jobs using the reset jobs endpoint will reset both types of jobs:
+
+```` curl <redis-ip>:5000/jobs ````
+
+and
+
+```` curl <redis-ip>:5000/resetjobs ````
+
+as done previously. Finally download the image as done before using 
+
+````curl localhost:5000/download/<job-id> > output2.png ````
+
+An example of this analysis job is also provided as output2.png within this directory.
 
 ## All Endpoints
 Unless specified, all endpoints run with GET methods only. 
@@ -96,7 +114,10 @@ Returns a list of jobs submitted.
 Accessing this endpoint will clear the jobs from the database. 
 
 ### /submit
-This endpoint is for use with POST requests to submit a job. If no country is provided it will default to producing a graph for USA. 
+This endpoint is for use with POST requests to submit the first type of analysis job. If no country is provided it will default to producing a graph for USA. 
+
+### /submit2
+This endpoint is for use with POST requests to submit the second type of analysis job. If no orbit is provided it will default to producing a graph for LEO. 
 
 ### /download/\<job-id>
 This endpoint is used to download the analysis job using the job id found by querying the jobs endpoint.
