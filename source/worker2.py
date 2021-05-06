@@ -24,9 +24,25 @@ def create_figure(jid):
     labels = list(res.keys())
     sizes = list(res.values())
     
+    cutoff = 0.02*sum(sizes)
+
+    cutlabels = []
+    cutsizes = []
+    other = 0
+    for idx in range(len(labels)):
+        if sizes[idx] <= cutoff:
+            other += sizes[idx]
+        else: 
+            cutlabels.append(labels[idx])
+            cutsizes.append(sizes[idx])
+    if other > 0:
+        cutlabels.append("Other")
+        cutsizes.append(other)
+
     fig, axs = plt.subplots()
-    axs.pie(sizes, labels=labels, autopct='%1.1f%%')
+    axs.pie(cutsizes, labels=cutlabels, autopct='%1.1f%%')
     axs.axis('equal')
+
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
         img = f.read()
