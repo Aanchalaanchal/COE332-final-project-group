@@ -31,6 +31,8 @@ def create_figure(jid):
     fig, axs = plt.subplots()
     axs.pie(sizes, labels=labels, autopct='%1.1f%%')
     axs.axis('equal')
+    plt.title(f"Percentage of Orbit Types for {country}")
+
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
         img = f.read()

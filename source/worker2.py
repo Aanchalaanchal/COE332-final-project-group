@@ -36,12 +36,13 @@ def create_figure(jid):
             cutlabels.append(labels[idx])
             cutsizes.append(sizes[idx])
     if other > 0:
-        cutlabels.append("Other")
+        cutlabels.append("Other (< 2%)")
         cutsizes.append(other)
 
     fig, axs = plt.subplots()
     axs.pie(cutsizes, labels=cutlabels, autopct='%1.1f%%')
     axs.axis('equal')
+    plt.title(f"Percentage of Countries for {orbit} Orbits")
 
     plt.savefig(f'{jid}.png')
     with open(f'{jid}.png', 'rb') as f:
