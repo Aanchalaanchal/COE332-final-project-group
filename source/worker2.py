@@ -4,10 +4,10 @@ import redis
 from collections import Counter
 import matplotlib.pyplot as plt
 
-# redis_ip = os.environ.get('REDIS_IP')
-# if not redis_ip:
-#    raise Exception()
-redis_ip = "localhost"
+redis_ip = os.environ.get('REDIS_IP')
+if not redis_ip:
+   raise Exception()
+# redis_ip = "localhost"
 
 rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
 

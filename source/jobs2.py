@@ -3,10 +3,10 @@ from hotqueue import HotQueue
 from redis import StrictRedis
 import os
 
-# redis_ip = os.environ.get('REDIS_IP')
-# if not redis_ip:
-#    raise Exception()
-redis_ip = "localhost"
+redis_ip = os.environ.get('REDIS_IP')
+if not redis_ip:
+   raise Exception()
+# redis_ip = "localhost"
 
 q2 = HotQueue("queue", host=redis_ip, port=6379, db=5)
 rdjobs = StrictRedis(host=redis_ip, port=6379, db=2, charset="utf-8", decode_responses=True)

@@ -12,10 +12,10 @@ import uuid
 
 app = Flask(__name__)
 
-# redis_ip = os.environ.get('REDIS_IP')
-# if not redis_ip:
-#    raise Exception()
-redis_ip = "localhost"
+redis_ip = os.environ.get('REDIS_IP')
+if not redis_ip:
+   raise Exception()
+# redis_ip = "localhost"
 
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0, charset="utf-8", decode_responses=True)
 rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
