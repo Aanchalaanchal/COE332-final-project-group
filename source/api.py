@@ -3,17 +3,19 @@ import json
 import redis
 from datetime import datetime
 from collections import Counter
-from jobs import add_job, get_jobs
+# from jobs import add_job, get_jobs
+import jobs
+import jobs2
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import uuid
 
 app = Flask(__name__)
 
-redis_ip = os.environ.get('REDIS_IP')
-if not redis_ip:
-   raise Exception()
-# redis_ip = "localhost"
+# redis_ip = os.environ.get('REDIS_IP')
+# if not redis_ip:
+#    raise Exception()
+redis_ip = "localhost"
 
 rd=redis.StrictRedis(host=redis_ip, port=6379, db=0, charset="utf-8", decode_responses=True)
 rdimg=redis.StrictRedis(host=redis_ip, port=6379, db=4)
@@ -134,14 +136,23 @@ def get_total_by_country(country):
 def submit():
    data = request.form.to_dict()
    if 'country' in data:
-      add_job(data['country'])
+      jobs.add_job(data['country'])
    else:
-      add_job('USA')
+      jobs.add_job('USA')
+   return "Job submitted to the queue"
+
+@app.route('/submit2', methods=['POST'])
+def submit2():
+   data = request.form.to_dict()
+   if 'orbit' in data:
+      jobs2.add_job(data['orbit'])
+   else:
+      jobs2.add_job('LEO')
    return "Job submitted to the queue"
 
 @app.route('/jobs', methods=['GET'])
 def jobs():
-   return json.dumps(get_jobs())
+   return json.dumps(jobs.get_jobs())
 
 @app.route('/download/<jobid>', methods=['GET'])
 def download(jobid):
