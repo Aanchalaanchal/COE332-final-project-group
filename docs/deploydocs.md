@@ -1,5 +1,7 @@
 # Deployment
 
+Deploying the app to a kubernetes cluster involves several different deployment files. YAML files are provided in the /kubernetes/test directory for the flask API, flask service, redis database, redis service, redis persistent volume mount, 2 workers, and debug deployment. Using this app requires execing into the debug pod to interact with the api. 
+
 ## Installation
 First, clone the project and access it. 
 ```bash
