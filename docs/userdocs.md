@@ -1,46 +1,60 @@
 # User Instructions
 
-A python script has been provided to run through testing of the multiple endpoints within our API. Once the application is deployed, navigate into the source directory and run ````python3 consumer.py```` to run the file and see example interactions ran through python and example responses. This file includes endpoints that do all CRUD operations needed to meet the final project requirements but does not include calling the analysis job, which will be described below. 
+## Accessing the App
+To interact with the app, first exec into the debug pod.
+
+``` kubectl exec -it <debug_pod> -- /bin/bash ```
+
+From here, the app can be interacted with either through manual curl commands or a consumer script. The consumer script has been provided to run through testing of the multiple endpoints within our API. Running ````python3 consumer.py```` will demonstrate example requests and responses. This file includes endpoints that do all CRUD operations needed to meet the final project requirements but does not include calling the analysis job, which will be described below. 
 
 ## Analysis Job Instructions
 
 The analysis job will generate a pie graph of all of the different types of satellite orbits for the specified country. To view this graph, first we have to submit a job for the worker to pick up. We do this by access the endpoint for job submission by running the following from curl:
 
-```` curl --data "country=USA" <redis-ip>:5000/submit ````
+```` curl --data "country=USA" <flask-ip>:5000/submit ````
 
-This requires finding the redis service IP address. The country listed within the data of the post request will be what country is used for the analysis job and will be graphed.
+Refer to deploydocs.md to find the flask-ip. The country listed within the data of the post request will be what country is used for the analysis job and will be graphed.
 
 We can now check on our analysis job by running:
 
-```` curl <redis-ip>:5000/jobs ````
+```` curl <flask-ip>:5000/jobs ````
 
-This will display a list of all jobs submitted with their id, status, and country parameters. We can continue querying this endpoint until we see our job has completed. If this ever has too many jobs that it is difficult to read, the jobs database may be cleared by running:
+This will display a list of all jobs submitted with their id, status, and country parameters. We can continue querying this endpoint until we see our job has completed. If this ever has too many jobs that it becomes difficult to read, the jobs database may be cleared by running:
 
-```` curl <redis-ip>:5000/resetjobs ````
+```` curl <flask-ip>:5000/resetjobs ````
 
 Once we can see that our job has a status of completed, we can download the png file of the graph by running:
 
-````curl localhost:5000/download/<job-id> > output.png ````
+````curl <flask-ip>:5000/download/<job-id> > output.png ````
 
 where job-id was displayed in the list of jobs when we queried the /jobs endpoint. There is an output.png file within this directory that was generated in this way and shows an example pie graph generated using USA as the country. 
 
-A second analysis job worker is provided to plot another graph that this time takes the orbit type and plots the corresponding countries present in what percentages in this orbit type. This works very similarly to the previous analysis job with the only thing changing is the submittion endpoint. This analysis job is submitted using:
+A second analysis job worker is provided to plot another graph that this time takes the orbit type and plots the corresponding countries present in what percentages in this orbit type. This works very similarly to the previous analysis job with the only thing changing is the submission endpoint. This analysis job is submitted using:
 
-```` curl --data "orbit=LEO" <redis-ip>:5000/submit2 ````
+```` curl --data "orbit=LEO" <flask-ip>:5000/submit2 ````
 
 The status of the job can be viewed using the exact same endpoint and reseting the jobs using the reset jobs endpoint will reset both types of jobs:
 
-```` curl <redis-ip>:5000/jobs ````
+```` curl <flask-ip>:5000/jobs ````
 
 and
 
-```` curl <redis-ip>:5000/resetjobs ````
+```` curl <flask-ip>:5000/resetjobs ````
 
 as done previously. Finally download the image as done before using 
 
-````curl localhost:5000/download/<job-id> > output2.png ````
+````curl <flask-ip>:5000/download/<job-id> > output2.png ````
 
 An example of this analysis job is also provided as output2.png within this directory.
+
+To retrieve the image on your local system, return back to ISP and transfer the image from the kubernetes cluster to ISP.
+```
+kubectl cp <debug_pod_name>:/app/output.png ./docs/kube_output.png
+```
+Then, transfer the image from ISP to your local system using
+```
+scp <TACC_ID>@isp02.tacc.utexas.edu:/repo_path/coe332-final-project/docs/kube_output.png \local_output_path\kube_output.png
+```
 
 ## All Endpoints
 Unless specified, all endpoints run with GET methods only. 
