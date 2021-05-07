@@ -21,7 +21,10 @@ spec:
       containers:
         - name: final-worker2-test
           image: kdnguyen205/coe332-final:1.0
+          imagePullPolicy: Always
           env:
+          - name: FLASK_IP
+            value: '10.102.71.56'
           - name: REDIS_IP
-            value: '10.101.19.72'
-          command: ["python", "worker2.py"]
+            value: '10.111.232.183'
+          command: ["python3", "worker2.py"]

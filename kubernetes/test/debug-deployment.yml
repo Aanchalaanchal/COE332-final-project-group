@@ -2,20 +2,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: py-debug-deployment
+  name: final-debug-deployment-test
   labels:
-    app: py-app
+    app: final-debug-test
+    env: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: py-app
+      app: final-debug-test
   template:
     metadata:
       labels:
-        app: py-app
+        app: final-debug-test
+        env: test
     spec:
       containers:
-        - name: py39
-          image: python:3.9
-          command: ['sleep', '999999999']
+        - name: final-debug-test
+          image: kdnguyen205/coe332-final:1.0
+          imagePullPolicy: Always
+          env:
+          - name: FLASK_IP
+            value: '10.102.71.56'
+          - name: REDIS_IP
+            value: '10.111.232.183' 
+          command: ['sleep', '999999']
+          ports:
+            - name: http
+              containerPort: 5000
+

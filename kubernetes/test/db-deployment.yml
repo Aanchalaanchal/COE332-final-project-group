@@ -20,6 +20,7 @@ spec:
       containers:
         - name: redis500
           image: redis:5.0.0
+          imagePullPolicy: Always
           command: ["redis-server"]
           volumeMounts:
           - name: final-db-pvc-test
