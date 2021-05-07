@@ -31,10 +31,18 @@ kube-get_all:
 	kubectl get pvc
 	@echo ""
 
-kube-clear_all-test:
-	kubectl delete deployments final-api-deployment-test final-db-deployment-test
-	kubectl delete services final-api-service-test final-db-service-test
-	kubectl delete pvc final-db-pvc-test
+kube-restart_deployments: kube-delete_deployments kube-apply_deployments
+
+kube-delete_deployments:
+	kubectl delete deployments final-api-deployment-test final-db-deployment-test final-debug-deployment-test
+	kubectl delete deployments final-worker-deployment-test final-worker2-deployment-test
+
+kube-apply_deployments:
+	kubectl apply -f ./kubernetes/test/db-deployment.yml
+	kubectl apply -f ./kubernetes/test/api-deployment.yml
+	kubectl apply -f ./kubernetes/test/worker-deployment.yml
+	kubectl apply -f ./kubernetes/test/worker2-deployment.yml
+	kubectl apply -f ./kubernetes/test/debug-deployment.yml
 
 docker-build:
 	docker build -t kdnguyen205/coe332-final:1.0 -f ./docker/Dockerfile ./source
