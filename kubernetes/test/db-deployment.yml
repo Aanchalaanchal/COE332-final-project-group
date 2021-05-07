@@ -2,29 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-deployment
+  name: final-db-deployment-test
   labels:
-    app: db-deployment-test
+    app: final-db-test
     env: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db-deployment-test
+      app: final-db-test
   template:
     metadata:
       labels:
-        app: db-deployment-test
+        app: final-db-test
         env: test
     spec:
       containers:
         - name: redis500
           image: redis:5.0.0
+          command: ["redis-server"]
           volumeMounts:
-          - name: db-pvc
+          - name: final-db-pvc-test
             mountPath: "../../data"
       volumes:
-      - name: db-pvc-volume
+      - name: final-db-pvc-test
         persistentVolumeClaim:
-          claimName: db-pvc
+          claimName: final-db-pvc-test
 

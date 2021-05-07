@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: db-service-test
+  name: final-db-service-test
   labels:
     env: test
 spec:
   type: ClusterIP
   selector:
-    app: db-service-test
+    app: final-db-test
   ports:
-  - name: db-service-ports
+  - name: db-ports
     port: 6379
     targetPort: 6379

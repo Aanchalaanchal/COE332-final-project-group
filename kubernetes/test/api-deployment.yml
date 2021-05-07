@@ -2,28 +2,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-deployment
+  name: final-api-deployment-test
   labels:
-    app: api-test
+    app: final-api-test
     env: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-test
+      app: final-api-test
   template:
     metadata:
       labels:
-        app: api-test
+        app: final-api-test
         env: test
     spec:
       containers:
-        - name: app
-          imagePullPolicy: Always
-          image: kdnguyen205/hw3
+        - name: final-api-test
+          image: kdnguyen205/coe332-final:1.0
           env:
-          - name: FLASK_APP
-            value: "app.py"
+          - name: REDIS_IP
+            value: '10.101.19.72' 
+          command: ['python', 'api.py']
           ports:
             - name: http
               containerPort: 5000

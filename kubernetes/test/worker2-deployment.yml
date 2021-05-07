@@ -2,26 +2,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: final-worker-deployment-test
+  name: final-worker2-deployment-test
   labels:
-    app: final-worker-test
+    app: final-worker2-test
     env: test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: final-worker-test
+      app: final-worker2-test
   template:
     metadata:
       labels:
-        app: final-worker-test
+        app: final-worker2-test
         env: test
         
     spec:
       containers:
-        - name: final-worker-test
+        - name: final-worker2-test
           image: kdnguyen205/coe332-final:1.0
           env:
           - name: REDIS_IP
             value: '10.101.19.72'
-          command: ["python", "worker.py"]
+          command: ["python", "worker2.py"]
