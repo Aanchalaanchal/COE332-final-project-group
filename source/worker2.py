@@ -1,5 +1,6 @@
 from jobs2 import q2, update_job_status, get_orbit
 from api import get_data
+import os
 import redis
 from collections import Counter
 import matplotlib.pyplot as plt

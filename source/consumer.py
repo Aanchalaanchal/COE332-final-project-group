@@ -80,12 +80,12 @@ update_space_bee = {
    "uid": "2749da22-22a5-4cd4-bbc1-082aef997605"
 }
 
-redis_ip = os.environ.get('REDIS_IP')
-if not redis_ip:
+flask_ip = os.environ.get('FLASK_IP')
+if not flask_ip:
    raise Exception()
 # redis_ip = "localhost"
 
-baseurl = f"http://{redis_ip}:5000"
+baseurl = f"http://{flask_ip}:5000"
 # Reset data
 print("Reseting data")
 response = requests.get(url=baseurl + "/")

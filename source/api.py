@@ -107,7 +107,7 @@ def get_vehicle(vehicle):
 def get_launch_by_id(key):
    if request.method == 'GET':
       bsat = rd.hgetall(key)
-      sat = { y.decode('utf-8'): bsat.get(y).decode('utf-8') for y in bsat.keys() }
+      sat = {y:bsat.get(y) for y in bsat.keys()}
       return json.dumps(sat)
    elif request.method == 'POST':
       rd.delete(key)

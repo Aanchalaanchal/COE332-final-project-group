@@ -1,5 +1,6 @@
 from jobs import q, update_job_status, get_country
 from api import get_data
+import os
 import redis
 from collections import Counter
 import matplotlib.pyplot as plt
